@@ -194,8 +194,8 @@ void testCarData() {
   Event* start = generateSimpleEvent(0, messagetypes::DATA_END);
   mm->processMessage(BaseMessagePtr(start));
 
-  QString fileName = "/Users/sergey/Projects/can_data/3uskor/CAN1_201_6.csv";
-  // QString fileName = "/Users/sergey/Projects/can_data/spok/CAN1_201_6.csv";
+  QString fileName = "/Users/sergey/projects/can_data/3uskor/CAN1_201_6.csv";
+  // QString fileName = "/Users/sergey/projects/can_data/spok/CAN1_201_6.csv";
 
   bool isFirst = true;
   long long oldVal;
