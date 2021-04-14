@@ -159,6 +159,22 @@ void NodeGroupProcessor::generateHypotheses() {
       }
       temp /= 2;
     }
+
+    /*  Number = 10
+        0 4 5                                                                                                                                   
+        0 1 4 5                                                                                                                                 
+        0 2 4 5                                                                                                                                 
+        0 1 2 4 5                                                                                                                               
+        0 3 4 5                                                                                                                                 
+        0 1 3 4 5                                                                                                                               
+        0 2 3 4 5                                                                                                                               
+        0 1 2 3 4 5                                                                                                                             
+        0 6                                                                                                                                     
+        0 1 6                                                                                                                                   
+        0 2 6
+        0....9 etc
+     */
+
     bool was = false;
 
     HypothesisPtr h = createHypothesis(&realNodes);

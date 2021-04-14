@@ -1,15 +1,12 @@
 QT -= gui
 QT += core
 
-
 CONFIG += c++11 console
 CONFIG -= app_bundle
 
-
 DEFINES += QT_DEPRECATED_WARNINGS _LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR
 
-INCLUDEPATH += "/Volumes/SD128/boost_1_35_0"
-
+INCLUDEPATH += "/Volumes/SD128/boost_1_35_0" #note use only this version
 
 
 SOURCES += \

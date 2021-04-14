@@ -1,3 +1,8 @@
+/*
+ * (c) Alexander Nevidimov, Alexander Makeev, Alexey Kutepov, Arseny Fomin, Dmitry Evgenievich, Pavel Cheblakov, Sergey Staroletov 
+ * 2010
+ * @license GNU GPL
+ * */
 #include "brain.h"
 #include "stdlibs.h"
 
@@ -157,25 +162,19 @@ void testRealEventsRemembering() {
   strategy->setMemory(mm, memory);
 
   for (int i = 0; i < 100; i++) {
-    Event* e1 = generateEvent(1, 200000 + 10000000 * i,
-                              messagetypes::FIXED_CAN_EVENT_BEGIN, -18);
-    Event* e2 = generateEvent(2, 300000 + 10000000 * i,
-                              messagetypes::FIXED_CAN_EVENT_BEGIN, -18);
-    Event* e3 = generateEvent(1, 500000 + 10000000 * i,
-                              messagetypes::FIXED_CAN_EVENT_END, -18);
-    Event* e4 = generateEvent(1, 700000 + 10000000 * i,
-                              messagetypes::FIXED_CAN_EVENT_BEGIN, -18);
-    Event* e5 = generateEvent(2, 800000 + 10000000 * i,
-                              messagetypes::FIXED_CAN_EVENT_END, -18);
-    Event* e6 = generateEvent(1, 900000 + 10000000 * i,
-                              messagetypes::FIXED_CAN_EVENT_END, -18);
+      Event *e1 = generateEvent(1, 200000 + 10000000 * i, messagetypes::FIXED_EVENT_BEGIN, -18);
+      Event *e2 = generateEvent(2, 300000 + 10000000 * i, messagetypes::FIXED_EVENT_BEGIN, -18);
+      Event *e3 = generateEvent(1, 500000 + 10000000 * i, messagetypes::FIXED_EVENT_END, -18);
+      Event *e4 = generateEvent(1, 700000 + 10000000 * i, messagetypes::FIXED_EVENT_BEGIN, -18);
+      Event *e5 = generateEvent(2, 800000 + 10000000 * i, messagetypes::FIXED_EVENT_END, -18);
+      Event *e6 = generateEvent(1, 900000 + 10000000 * i, messagetypes::FIXED_EVENT_END, -18);
 
-    mm->processMessage(BaseMessagePtr(e1));
-    mm->processMessage(BaseMessagePtr(e2));
-    mm->processMessage(BaseMessagePtr(e3));
-    mm->processMessage(BaseMessagePtr(e4));
-    mm->processMessage(BaseMessagePtr(e5));
-    mm->processMessage(BaseMessagePtr(e6));
+      mm->processMessage(BaseMessagePtr(e1));
+      mm->processMessage(BaseMessagePtr(e2));
+      mm->processMessage(BaseMessagePtr(e3));
+      mm->processMessage(BaseMessagePtr(e4));
+      mm->processMessage(BaseMessagePtr(e5));
+      mm->processMessage(BaseMessagePtr(e6));
   }
 
   Event* end = generateSimpleEvent(100000000000LL, messagetypes::DATA_END);
@@ -232,14 +231,18 @@ void testCarData() {
         printf(" %d\n", value);
         //
 
-        Event* e1 = generateEvent((char)value, 10000 + 100000 * i,
-                                  messagetypes::FIXED_CAN_EVENT_BEGIN, -18);
+        Event *e1 = generateEvent((char) value,
+                                  10000 + 100000 * i,
+                                  messagetypes::FIXED_EVENT_BEGIN,
+                                  -18);
 
         if (value > 190) {
           value = 190;
         }
-        Event* e2 = generateEvent((char)value, 20000 + 100000 * i,
-                                  messagetypes::FIXED_CAN_EVENT_END, -18);
+        Event *e2 = generateEvent((char) value,
+                                  20000 + 100000 * i,
+                                  messagetypes::FIXED_EVENT_END,
+                                  -18);
         //
         mm->processMessage(BaseMessagePtr(e1));
         mm->processMessage(BaseMessagePtr(e2));

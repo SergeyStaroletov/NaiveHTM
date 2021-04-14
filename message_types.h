@@ -4,8 +4,8 @@
 namespace messagetypes {
 
 enum EMessageTypes {
-  FIXED_CAN_EVENT_BEGIN = 1,
-  FIXED_CAN_EVENT_END = 2,
+  FIXED_EVENT_BEGIN = 1,
+  FIXED_EVENT_END = 2,
   PREDICTED_MIDI_EVENT_BEGIN = 3,
   PREDICTED_MIDI_EVENT_END = 4,
 

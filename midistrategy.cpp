@@ -5,8 +5,7 @@ using namespace brain;
 
 #define dsec 100000LL;
 
-MyStrategy::MyStrategy()  //(MemoryModulePtr memoryModule, IMemoryPtr
-                              //storage)
+MyStrategy::MyStrategy()
 {
   // memoryModule_ = memoryModule;
   // storage_ = storage;

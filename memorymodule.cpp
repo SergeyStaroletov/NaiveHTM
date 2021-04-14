@@ -21,10 +21,10 @@ int MemoryModule::processMessage(BaseMessagePtr _msg) {
   count++;
   // printf("%d\n", count);
   switch (_msg->getType()) {
-    case messagetypes::FIXED_CAN_EVENT_BEGIN:
+  case messagetypes::FIXED_EVENT_BEGIN:
       processBeginning(_msg);
       break;
-    case messagetypes::FIXED_CAN_EVENT_END:
+  case messagetypes::FIXED_EVENT_END:
       processEnding(_msg);
       break;
     case messagetypes::DATA_END:

@@ -41,7 +41,7 @@ void BoostMemory::getVisualization2(const char* filename)
 */
 void BoostMemory::getVisualization(const char* filename) {
   fstream out(filename, std::fstream::out);
-  out << "Digraph G {" << std::endl;
+  out << "digraph G {" << std::endl;
 
   graph_traits<Graph>::vertex_iterator i, end;
 
@@ -50,7 +50,7 @@ void BoostMemory::getVisualization(const char* filename) {
     out << node->id;
 
     out << "[label=\"" << node->id << " (" << node->amount << ")\" ] ";
-    //
+
     out << ";" << std::endl;
   }
   graph_traits<Graph>::edge_iterator ei, edge_end;
