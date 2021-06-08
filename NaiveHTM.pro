@@ -8,12 +8,22 @@ DEFINES += QT_DEPRECATED_WARNINGS _LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR
 
 INCLUDEPATH += "/Volumes/SD128/boost_1_35_0" #note use only this version
 
+INCLUDEPATH += "$$PWD/contrib/libjdkmidi-20051014/include"
+
+DEPENDPATH += "$$PWD/contrib/libjdkmidi-20051014/lib"
+LIBS += -ljdkmidi -L"$$PWD/contrib/libjdkmidi-20051014/lib"
+
+#MediaFiles.files += ./contrib/libjdkmidi-20051014/lib/libjdkmidi.dylib
+#MediaFiles.path = Contents/MacOS
+#QMAKE_BUNDLE_DATA += MediaFiles
+
 
 SOURCES += \
 main.cpp \
 boostmemory.cpp \
 hypothesis.cpp \
 memorymodule.cpp \
+    midi_processor.cpp \
 midistrategy.cpp \
 nodegroupprocessor.cpp \
 offsetlist.cpp \

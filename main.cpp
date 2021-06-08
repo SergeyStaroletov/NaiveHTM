@@ -4,6 +4,7 @@
  * @license GNU GPL
  * */
 #include "brain.h"
+#include "midi_processor.h"
 #include "stdlibs.h"
 
 #include <QDateTime>
@@ -183,78 +184,79 @@ void testRealEventsRemembering() {
   memory->getVisualization("graph.txt");
 }
 
-void testCarData() {
-  IStrategyPtr strategy(new MyStrategy());
-  IMemoryPtr memory(new BoostMemory(strategy));
-  MemoryModulePtr mm(new MemoryModule(memory));
-  mm->setStrategy(strategy);
-  strategy->setMemory(mm, memory);
+//just a stub  -- model should be rewritten!
+void testCarData()
+{
+    IStrategyPtr strategy(new MyStrategy());
+    IMemoryPtr memory(new BoostMemory(strategy));
+    MemoryModulePtr mm(new MemoryModule(memory));
+    mm->setStrategy(strategy);
+    strategy->setMemory(mm, memory);
 
-  Event* start = generateSimpleEvent(0, messagetypes::DATA_END);
-  mm->processMessage(BaseMessagePtr(start));
+    Event *start = generateSimpleEvent(0, messagetypes::DATA_END);
+    mm->processMessage(BaseMessagePtr(start));
 
-  QString fileName = "/Users/sergey/projects/can_data/3uskor/CAN1_201_6.csv";
-  // QString fileName = "/Users/sergey/projects/can_data/spok/CAN1_201_6.csv";
+    QString fileName = "/Users/sergey/projects/can_data/3uskor/CAN1_201_6.csv";
+    // QString fileName = "/Users/sergey/projects/can_data/spok/CAN1_201_6.csv";
 
-  bool isFirst = true;
-  long long oldVal;
-  QDateTime time0;
-  long long timeStamp = 0;
-  QFile inputFile(fileName);
+    bool isFirst = true;
+    long long oldVal;
+    QDateTime time0;
+    long long timeStamp = 0;
+    QFile inputFile(fileName);
 
-  int i = 0;
-  if (inputFile.open(QIODevice::ReadOnly)) {
-    QTextStream in(&inputFile);
-    while (!in.atEnd()) {
-      QString line = in.readLine();
-      int virgule = line.indexOf(',');
+    int i = 0;
+    if (inputFile.open(QIODevice::ReadOnly)) {
+        QTextStream in(&inputFile);
+        while (!in.atEnd()) {
+            QString line = in.readLine();
+            int virgule = line.indexOf(',');
 
-      if (virgule > 0) {
-        QString timeStr = line.left(virgule);
-        printf("%s ", timeStr.toLocal8Bit().data());
-        QDateTime dt =
-            QDateTime::fromString(timeStr, "yyyy-MM-dd hh:mm:ss.zzz");
+            if (virgule > 0) {
+                QString timeStr = line.left(virgule);
+                printf("%s ", timeStr.toLocal8Bit().data());
+                QDateTime dt = QDateTime::fromString(timeStr, "yyyy-MM-dd hh:mm:ss.zzz");
 
-        if (isFirst) {
-          time0 = dt;
-        } else
-          timeStamp = time0.msecsTo(dt);
+                if (isFirst) {
+                    time0 = dt;
+                } else
+                    timeStamp = time0.msecsTo(dt);
 
-        // timeStamp = 100000 + 100000 * i;
-        i++;
-        printf("%ld", timeStamp);
+                // timeStamp = 100000 + 100000 * i;
+                i++;
+                printf("%ld", timeStamp);
 
-        int value = line.mid(virgule + 1).toInt();
+                int value = line.mid(virgule + 1).toInt();
 
-        // value = 1 + rand() % 2;
+                // value = 1 + rand() % 2;
 
-        printf(" %d\n", value);
-        //
+                printf(" %d\n", value);
+                //
 
-        Event *e1 = generateEvent((char) value,
-                                  10000 + 100000 * i,
-                                  messagetypes::FIXED_EVENT_BEGIN,
-                                  -18);
+                Event *e1 = generateEvent((char) value,
+                                          10000 + 100000 * i,
+                                          messagetypes::FIXED_EVENT_BEGIN,
+                                          -18);
 
-        if (value > 190) {
-          value = 190;
+                if (value > 190) {
+                    value = 190;
+                }
+                Event *e2 = generateEvent((char) value,
+                                          20000 + 100000 * i,
+                                          messagetypes::FIXED_EVENT_END,
+                                          -18);
+                //
+                mm->processMessage(BaseMessagePtr(e1));
+                mm->processMessage(BaseMessagePtr(e2));
+
+                oldVal = value;
+                isFirst = true;
+            }
         }
-        Event *e2 = generateEvent((char) value,
-                                  20000 + 100000 * i,
-                                  messagetypes::FIXED_EVENT_END,
-                                  -18);
-        //
-        mm->processMessage(BaseMessagePtr(e1));
-        mm->processMessage(BaseMessagePtr(e2));
-
-        oldVal = value;
-        isFirst = true;
-      }
+        inputFile.close();
     }
-    inputFile.close();
-  }
 
-  /*
+    /*
   for (int i = 0; i < 100; i++) {
     Event* e1 = generateEvent(1, 200000 + 10000000 * i,
                               messagetypes::FIXED_MIDI_EVENT_BEGIN, -18);
@@ -279,20 +281,53 @@ void testCarData() {
 
   */
 
-  Event* end = generateSimpleEvent(timeStamp + 1, messagetypes::DATA_END);
-  mm->processMessage(BaseMessagePtr(end));
+    Event *end = generateSimpleEvent(timeStamp + 1, messagetypes::DATA_END);
+    mm->processMessage(BaseMessagePtr(end));
 
-  memory->getVisualization("graph.txt");
+    memory->getVisualization("graph.txt");
 }
 
-int main() {
-  cout << "I'm smart ;)" << endl;
+//open midi file and parse it, send all notes into my memory
+void testMidi()
+{
+    IStrategyPtr strategy(new MyStrategy());
+    IMemoryPtr memory(new BoostMemory(strategy));
+    MemoryModulePtr mm(new MemoryModule(memory));
+    mm->setStrategy(strategy);
+    strategy->setMemory(mm, memory);
 
-  cout << "HI THERE!" << endl;
+    std::cout << "Dumping midi...\n";
+    MidiProcessor *processor = new MidiProcessor(
+        "/Users/sergey/Projects/TempMem/NaiveHTM/mid/manual.mid"); //MIDI sample
 
-  // testRealEventsRemembering();
+    std::list<brain::EventPtr> *events = processor->process();
 
-  testCarData();
+    long timestamp = 0;
+    int n = 0;
+    while (!events->empty()) {
+        brain::EventPtr event = events->front();
+        std::cout << (n++) << ": " << (timestamp = event->timestamp) << "\n";
+        mm->processMessage(event);
+        events->pop_front();
+    };
 
-  return 0;
+    delete processor;
+
+    Event *end = generateSimpleEvent(timestamp + 1, messagetypes::DATA_END);
+    mm->processMessage(BaseMessagePtr(end));
+
+    memory->getVisualization("graph.txt");
+
+    std::cout << "Your graph is in ./graph.txt\n";
+}
+
+int main()
+{
+    // testRealEventsRemembering();
+
+    //testCarData(); //<-- this is the goal
+
+    testMidi();
+
+    return 0;
 }
